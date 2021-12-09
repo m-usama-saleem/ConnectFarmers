@@ -1,0 +1,52 @@
+{
+  "name": "connectfarmers",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "clsx": "^1.1.1",
+    "history": "^5.0.0",
+    "i18next": "^20.2.1",
+    "node-sass": "^4.14.1",
+    "primeflex": "2.0.0",
+    "primeicons": "4.1.0",
+    "primereact": "6.6.0",
+    "prismjs": "1.9.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-i18next": "^11.8.12",
+    "react-lazylog": "^4.5.3",
+    "react-router": "^6.0.0-alpha.3",
+    "react-router-dom": "^6.0.0-alpha.3",
+    "react-scripts": "4.0.1",
+    "react-transition-group": "^4.4.1",
+    "sass": "^1.32.8",
+    "styled-components": "^5.2.1",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {}
+}
