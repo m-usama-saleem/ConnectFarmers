@@ -18,7 +18,6 @@ export const  AppWrapper = (props) => {
 
     switch (location.pathname) {
         case '/login':
-            debugger;
             return <LoginView />
         // case '/error':
         //     return <Route path="/error" component={Error} />

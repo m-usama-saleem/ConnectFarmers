@@ -6,17 +6,27 @@ import AppFooter from './AppFooter';
 import AppSearch from './AppSearch';
 import AppRightMenu from './AppRightMenu';
 import AppBreadcrumb from './AppBreadcrumb';
+import RouterTable from '../router';
 
 import { TestView } from '../views/Test/test';
 import { LoginView } from '../views/Login/login';
 import { ProfileView } from '../views/Profile/profile';
-import RouterTable from '../router';
+
+// import {CreateProductsView, ListProductsView }  from '../views/Product';
+import { CreateProductsView, ListProductsView } from '../views/Product';
+
+import { ActiveBidsView } from '../views/Bid/activebids';
+import { ExpireBidsView } from '../views/Bid/expirebids';
+
+import {BoughtListView} from '../views/Account';
+import {PostBidsView} from '../views/Account';
+import {SoldListView} from '../views/Account';
+
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import './App.scss';
-
-
+import { ACTIVE_BIDS_VIEW, BOUGHT_LIST_VIEW, CREATE_PRODUCTS_VIEW, EXPIRE_BIDS_VIEW, LIST_PRODUCTS_VIEW, POST_BIDS_VIEW, PROFILE_VIEW, SOLD_LIST_VIEW } from '../constants/routes';
 
 const App = () => {
 
@@ -51,35 +61,45 @@ const App = () => {
         {
             label: "Product", icon: "pi pi-fw pi-home",
             items: [
-                { label: "List", icon: "pi pi-fw pi-home", to: "/listproducts" },
-                { label: "Create", icon: "pi pi-fw pi-home", to: "/createproducts" }
+                { label: "List", icon: "pi pi-fw pi-home", to: LIST_PRODUCTS_VIEW },
+                { label: "Create", icon: "pi pi-fw pi-home", to: CREATE_PRODUCTS_VIEW}
             ]
         },
         { separator: true },
         {
-            label: "Bids", icon: "pi pi-fw pi-id-card",
+            label: "My Bids", icon: "pi pi-fw pi-id-card",
             items: [
-                { label: "Active", icon: "pi pi-fw pi-id-card", to: "/activebids" },
-                { label: "Expires", icon: "pi pi-fw pi-check-square", to: "/expirebids" },
+                { label: "Active", icon: "pi pi-fw pi-id-card", to: ACTIVE_BIDS_VIEW },
+                { label: "Expires", icon: "pi pi-fw pi-check-square", to: EXPIRE_BIDS_VIEW },
             ]
         },
         { separator: true },
         {
             label: "Account", icon: "pi pi-fw pi-id-card",
             items: [
-                { label: "Sold List", icon: "pi pi-fw pi-id-card", to: "/soldlist" },
-                { label: "Bought List", icon: "pi pi-fw pi-check-square", to: "/boughtlist" },
-                { label: "Post Bids", icon: "pi pi-fw pi-check-square", to: "/postbids" },
+                { label: "Sold List", icon: "pi pi-fw pi-id-card", to: SOLD_LIST_VIEW },
+                { label: "Bought List", icon: "pi pi-fw pi-check-square", to: BOUGHT_LIST_VIEW },
+                { label: "Post Bids", icon: "pi pi-fw pi-check-square", to: POST_BIDS_VIEW },
 
             ]
         }
     ];
-
+    
     const routers = [
-        { path: '/', component: TestView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'Dashboard' }] } },
+        // { path: '/', component: TestView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'Dashboard' }] } },
         { path: '/test', component: TestView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'Test Page' }] } },
         { path: '/login', component: LoginView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'Test Page' }] } },
-        { path: '/profile', component: ProfileView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'Test Page' }] } },
+        { path: PROFILE_VIEW, component: ProfileView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'profile' }] } },
+        
+        { path: CREATE_PRODUCTS_VIEW, component: CreateProductsView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'create products' }] } },
+        { path: LIST_PRODUCTS_VIEW, component: ListProductsView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'list products' }] } },
+        
+        { path: ACTIVE_BIDS_VIEW, component: ActiveBidsView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'activebids Page' }] } },
+        { path: EXPIRE_BIDS_VIEW, component: ExpireBidsView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'expirebids Page' }] } },
+        { path: SOLD_LIST_VIEW, component: SoldListView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'soldlist Page' }] } },
+        
+        { path: BOUGHT_LIST_VIEW, component: BoughtListView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'boughtlist Page' }] } },
+        { path: POST_BIDS_VIEW, component: PostBidsView, exact: true, meta: { breadcrumb: [{ parent: '', label: 'postbids Page' }] } },
     ];
 
     useEffect(() => {

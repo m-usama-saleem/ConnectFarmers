@@ -1,4 +1,4 @@
-﻿using ConnectFarmer.Database.Model;
+﻿using ConnectFarmer.Database.Models;
 using ConnectFarmers.ViewModels.Users;
 using GetacMasterDock03D.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +59,7 @@ namespace ConnectFarmers.Services.Users
             try
             {
                 var user = await _db.Users.Where(x => x.SysSerial == userId).FirstOrDefaultAsync();
-                if(user != null)
+                if (user != null)
                 {
                     var profile = await _db.UserProfiles.Where(x => x.SysSerial == user.SysSerial).FirstOrDefaultAsync();
                     if (user != null)
@@ -83,7 +83,7 @@ namespace ConnectFarmers.Services.Users
                 {
                     result = null;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -103,9 +103,14 @@ namespace ConnectFarmers.Services.Users
                     LoginId = userViewModel.LoginId,
                     Password = GetPasswordHash(userViewModel.Password),
                 };
-                await _db.Users.AddAsync(user);
+                var res = await _db.Users.AddAsync(user);
                 result = await _db.SaveChangesAsync();
 
+                _db.UserProfiles.Add(new UserProfile
+                {
+                    UserId = res.Entity.SysSerial
+                });
+                result = await _db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -113,25 +118,25 @@ namespace ConnectFarmers.Services.Users
                 result = 0;
             }
             return result;
-        }        
+        }
         public async Task<int> RegisterOAuth(OAuthUsersViewModel oauthUser)
         {
             var result = 0;
             try
             {
-                    var user = new User();
-                    user.LoginId = oauthUser.LoginId;
-                    user.OauthKey = oauthUser.OAuthKey;
-                    _db.Users.Add(user);
-                    var userCreated = await _db.SaveChangesAsync();
-                    if (userCreated > 0)
+                var user = new User();
+                user.LoginId = oauthUser.LoginId;
+                user.OauthKey = oauthUser.OAuthKey;
+                _db.Users.Add(user);
+                var userCreated = await _db.SaveChangesAsync();
+                if (userCreated > 0)
+                {
+                    _db.UserProfiles.Add(new UserProfile
                     {
-                        _db.UserProfiles.Add(new UserProfile
-                        {
-                            UserId = user.SysSerial,
-                        });
-                        result = await _db.SaveChangesAsync();
-                    }
+                        UserId = user.SysSerial,
+                    });
+                    result = await _db.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -209,6 +214,8 @@ namespace ConnectFarmers.Services.Users
                                     LastName = profile.LastName,
                                     Contact = profile.Contact,
                                     LoginId = user.LoginId,
+                                    Image = profile.Image,
+                                    Nic = profile.Nic,
                                 }).FirstOrDefaultAsync();
             }
             catch (Exception ex)
@@ -236,6 +243,8 @@ namespace ConnectFarmers.Services.Users
                                     LastName = profile.LastName,
                                     Contact = profile.Contact,
                                     LoginId = user.LoginId,
+                                    Image = profile.Image,
+                                    Nic = profile.Nic,
                                 }).FirstOrDefaultAsync();
             }
             catch (Exception ex)
@@ -408,6 +417,8 @@ namespace ConnectFarmers.Services.Users
                         LastName = profile.LastName,
                         MiddleName = profile.MiddleName,
                         Contact = profile.Contact,
+                        Image = profile.Image,
+                        Nic = profile.Nic,
                         LoginId = loginId,
                     };
                 }
@@ -416,7 +427,7 @@ namespace ConnectFarmers.Services.Users
                     result = new ProfileViewModel()
                     {
                         UserId = userIdInSystem,
-                        LoginId = loginId 
+                        LoginId = loginId
                     };
                 }
             }
@@ -481,6 +492,8 @@ namespace ConnectFarmers.Services.Users
                         profile.LastName = profileViewModel.LastName;
                         profile.MiddleName = profileViewModel.MiddleName;
                         profile.Contact = profileViewModel.Contact;
+                        profile.Image = profileViewModel.Image;
+                        profile.Nic = profileViewModel.Nic;
 
                         await _db.UserProfiles.AddAsync(profile);
                         DBResult = await _db.SaveChangesAsync();
@@ -502,6 +515,8 @@ namespace ConnectFarmers.Services.Users
                         profile.LastName = profileViewModel.LastName;
                         profile.MiddleName = profileViewModel.MiddleName;
                         profile.Contact = profileViewModel.Contact;
+                        profile.Image = profileViewModel.Image;
+                        profile.Nic = profileViewModel.Nic;
 
                         _db.UserProfiles.Update(profile);
                         var dbresult = await _db.SaveChangesAsync();

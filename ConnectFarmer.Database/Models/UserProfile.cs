@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace ConnectFarmer.Database.Model
+namespace ConnectFarmer.Database.Models
 {
     public partial class UserProfile
     {
@@ -14,5 +14,7 @@ namespace ConnectFarmer.Database.Model
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Contact { get; set; }
+        public string Image { get; set; }
+        public string Nic { get; set; }
     }
 }

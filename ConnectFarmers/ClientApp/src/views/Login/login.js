@@ -127,7 +127,6 @@ export const LoginView = () => {
         } else {
             setTimeout(function () {
                 setIsLoading(false);
-                debugger;
                 setError(result.data.message);
                 if (regissterBtnRef.current) {
                     regissterBtnRef.current.removeAttribute("disabled");

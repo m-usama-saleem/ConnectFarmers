@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace ConnectFarmer.Database.Model
+namespace ConnectFarmer.Database.Models
 {
     public partial class User
     {

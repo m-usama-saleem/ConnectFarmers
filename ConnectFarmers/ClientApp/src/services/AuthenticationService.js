@@ -8,7 +8,7 @@ function AuthenticationService() {
     var { user, updateUser } = useContext(LocalStorageContext);
     var { HandleApiError } = HandleError()
     const baseUrl = "api/user/";
-    const { FetchPost, FetchGet } = ApiHooks();
+    const { FetchPost, FetchGet, FetchPostFile } = ApiHooks();
 
     const Login = async (loginModel) => {
 
@@ -21,6 +21,16 @@ function AuthenticationService() {
                 updateUser("profile", resData.data.user);
                 updateUser("isLoggedIn", true);
                 updateUser("isSessionExpired", false);
+                localStorage.setItem("LoggedInUser", JSON.stringify(resData.data))
+
+                var proData = await FetchGet(baseUrl + 'Profile/' + resData.data.user.sysSerial);
+                if (proData.isError == true) {
+                    return proData;
+                } else {
+                    if (proData.data != null) {
+                    }
+                    localStorage.setItem("LoggedInUserProfile", JSON.stringify(proData.data))
+                }
             } else {
                 resData.data = { message: "Service not available" }
             }
@@ -32,7 +42,6 @@ function AuthenticationService() {
     const RefreshToken = async () => {
         var resData = await FetchPost(window.location.origin.toString() + "/" + baseUrl + 'refresh');
         console.log("=====RefreshToken Data=====" + resData);
-        debugger;
         if (resData.isError === false) {
             if (resData.data != null) {
                 updateUser("isLoggedIn", true);
@@ -53,6 +62,7 @@ function AuthenticationService() {
                 updateUser("token", "");
                 updateUser("profile", "");
                 updateUser("isLoggedIn", false);
+                localStorage.removeItem("LoggedInUser")
             }
         } else {
             HandleApiError(resData.data);
@@ -62,14 +72,13 @@ function AuthenticationService() {
     const Register = async (loginModel) => {
         var resData = await FetchPost(baseUrl + 'register', loginModel);
         if (resData.isError == true) {
-            if(resData.data.status = 409)
-            {
+            if (resData.data.status = 409) {
                 resData.data.message = "User with this email already exists";
             }
         } else {
             if (resData.data == undefined || resData.data != null) {
-                resData.data = { message: "Service not available" }    
-            } 
+                resData.data = { message: "Service not available" }
+            }
         }
         return resData;
 
@@ -79,16 +88,45 @@ function AuthenticationService() {
         var resData = await FetchGet(baseUrl + 'Profile/' + id);
         if (resData.isError === false) {
             if (resData.data != null) {
-                debugger;
             }
         } else {
             if (resData.data == undefined || resData.data != null) {
-                resData.data = { message: "Service not available" }    
-            } 
+                resData.data = { message: "Service not available" }
+            }
         }
     }
 
-    return { Login, RefreshToken, Logout,Register,GetProfile };
+    const UpdateUserProfile = async (loginModel) => {
+        var resData = await FetchPost(baseUrl + 'addprofile', loginModel);
+        if (resData.isError == true) {
+            if (resData.data.status = 409) {
+                resData.data.message = "User with this email already exists";
+            }
+        } else {
+            if (resData.data == undefined || resData.data != null) {
+                resData.data = { message: "Service not available" }
+            }
+        }
+        return resData;
+    }
+
+    const UploadImage = async (model) => {
+        var resData = await FetchPostFile(baseUrl + 'upload', model);
+        if (resData.isError === false) {
+            if (resData.data != null) {
+                return resData.data.content;
+            }
+        } else {
+            if (resData.data == undefined || resData.data != null) {
+                resData.data = { message: "Service not available" }
+            }
+        }
+    }
+
+    return {
+        Login, RefreshToken, Logout, Register,
+        GetProfile, UploadImage, UpdateUserProfile
+    };
 }
 
 export { AuthenticationService }

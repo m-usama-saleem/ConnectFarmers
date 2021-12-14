@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -166,7 +168,7 @@ namespace ConnectFarmers.Controllers.Users
                 var result = await _userService.GetProfileByLoginId(id);
                 if (result != null)
                 {
-                    return Ok();
+                    return Ok(result);
                 }
                 else
                 {
@@ -309,6 +311,35 @@ namespace ConnectFarmers.Controllers.Users
 
                 return BadRequest("Invalid data");
             }
+        }
+        [HttpPost, Route("upload")]
+        public async Task<IActionResult> Upload(IFormCollection model)
+        {
+            if (model.Files.Count > 0)
+            {
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var fileNames = "";
+                foreach (var file in model.Files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var g = Guid.NewGuid();
+                        var realName = String.Format("{0}_{1}", g, file.FileName);
+
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        //var dbPath = Path.Combine(folderName, fileName);
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        fileNames += fileName;
+                    }
+                }
+                return Ok(new { Content = fileNames });
+            }
+            return BadRequest();
         }
     }
 }

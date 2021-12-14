@@ -1,33 +1,101 @@
 
 import React, { useState, useEffect, useContext, useRef } from "react";
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Dropdown } from 'primereact/dropdown';
+import { AuthenticationService } from '../../services/AuthenticationService';
+
 
 export const ProfileView = () => {
-   // const { t } = useTranslation();
-   // const { culture } = useContext(LocalStorageContext)
+    // const { t } = useTranslation();
+    // const { culture } = useContext(LocalStorageContext)
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("")
-  
-
-    // const { GetUnitInformation } = UnitInformationService();
-    // const [unitInformationData, setUnitInformationData] = useState({});
+    const [user, setUser] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
+    const { UpdateUserProfile, UploadImage } = AuthenticationService();
+    const [name, setName] = useState("");
+    const [files, setFiles] = useState("");
+    const [contact, setContact] = useState("");
+    const [nic, setNic] = useState("");
 
     useEffect(async () => {
+        var ls = JSON.parse(localStorage.getItem("LoggedInUser"));
+        var ls_up = JSON.parse(localStorage.getItem("LoggedInUserProfile"));
 
-        // var result = await GetUnitInformation();
-        // if (result.isError === false) {
-        //     setUnitInformationData(result.data);
-        //     setTimeout(function () {
-        //         setIsLoading(false);
-        //     }, 1000);
-        // } else {
-        //     setError(result.data.message)
-        //     setTimeout(function () {
-        //         setIsLoading(false);
-        //     }, 1000);
-        // }
+        setUser(ls.user)
+        setName(ls.user.name)
+        setUserProfile(ls_up)
     }, []);
 
-        return (
-            <div>profile page</div>)
+    function SaveProfile() {
+        var filesArray = files;
+        let f = new FormData();
+        if (filesArray && filesArray.length > 0) {
+            filesArray.forEach(e => {
+                f.append("file[]", e)
+            })
+        }
 
+        UploadImage(f).then((fname) => {
+            userProfile.image = fname;
+            localStorage.setItem("LoggedInUserProfile", JSON.stringify(userProfile))
+            var obj = {
+                LoginId: user.loginId,
+                FirstName: name,
+                Image: fname,
+                Contact: contact,
+                NIC: nic
+            }
+            UpdateUserProfile(obj)
+        })
+    }
+
+    const onFileSelected = (e) => {
+        const { target: { files } } = e;
+        const filesToStore = [];
+
+        [...files].map(file => {
+            filesToStore.push(file)
+        })
+        setFiles(filesToStore)
+    }
+
+
+    return (
+        <div>
+            <div className="card p-fluid">
+                <h5>Change Profile Data</h5>
+                <div className="p-formgrid p-grid">
+                    <div className="p-field p-col-6">
+                        <label htmlFor="name2">Name</label>
+                        <InputText value={name}
+                            onChange={(e) => setName(e.target.value)} id="name2" type="text" />
+                    </div>
+                    <div className="p-field p-col-6">
+                        <label htmlFor="email2">Email</label>
+                        <InputText value={userProfile ? userProfile.loginId : ""} id="email2" type="text" disabled />
+                    </div>
+                    <div className="p-field p-col-6">
+                        <label htmlFor="contact">Contact</label>
+                        <InputText value={contact} onChange={(e) => setContact(e.target.value)} id="contact" type="text" />
+                    </div>
+                    <div className="p-field p-col-6">
+                        <label htmlFor="nic">NIC</label>
+                        <InputText value={nic} onChange={(e) => setNic(e.target.value)} id="nic" type="text" />
+                    </div>
+                    <div className="p-field p-col-6">
+                        <label htmlFor="state">Upload Profile Pic</label>
+                        <InputText type="file" onChange={onFileSelected} />
+                    </div>
+                    <div className="p-col-12 p-grid p-justify-end p-m-0">
+                        <div className="box p-col-3">
+                            <Button label="Save" onClick={() => SaveProfile()} className="p-mb-2 p-mt-5"></Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }

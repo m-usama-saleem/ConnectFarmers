@@ -1,3 +1,4 @@
+using ConnectFarmers.Services.Products;
 using ConnectFarmers.Services.Users;
 using GetacMasterDock03D.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,9 +51,10 @@ namespace ConnectFarmers
                }
            );
             services.TryAddSingleton<Microsoft.AspNetCore.Http.IHttpContextAccessor, HttpContextAccessor>();
-            services.AddDbContext<ConnectFarmer.Database.Model.ConnectFarmersContext>(options =>
+            services.AddDbContext<ConnectFarmer.Database.Models.ConnectFarmersContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IConnectFarmerCommon, ConnectFarmerCommon>();
 
             //services.AddTransient<IActionResult, ApiResult>();

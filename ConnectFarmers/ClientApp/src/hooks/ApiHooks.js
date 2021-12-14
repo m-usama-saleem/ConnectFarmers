@@ -6,7 +6,7 @@ export const ApiHooks = () => {
 
     var { user } = useContext(LocalStorageContext);
 
-    const FetchGet = async (url) => {
+    const FetchGet = async (url, requestBody) => {
         var returnResponse = { data: null, isLoading: true, isError: false };
 
         var header = !user.isLoggedIn ?
@@ -18,7 +18,8 @@ export const ApiHooks = () => {
 
         const requestOptions = {
             method: 'GET',
-            headers: header
+            headers: header,
+            body: JSON.stringify(requestBody)
         };
 
         await fetch(url, requestOptions)
@@ -55,7 +56,7 @@ export const ApiHooks = () => {
     }
 
     const FetchPost = async (url, requestBody) => {
-        
+
         var returnResponse = { data: null, isLoading: true, isError: false };
         var header = !user.isLoggedIn ?
             { 'Content-Type': 'application/json' } :
@@ -72,11 +73,61 @@ export const ApiHooks = () => {
 
         await fetch(url, requestOptions)
             .then(response => {
-                debugger;
                 if (response.ok) {
                     return new Promise((resolve) => {
                         if (response) {
                             response.json().then(json => resolve(json)).catch(() => resolve(null))
+                        } else {
+                            resolve(null)
+                        }
+                    })
+                } else if (!response.ok) {
+                    if (response.status == 401) {
+                        returnResponse.isError = true;
+                        return response;
+                    } else {
+                        returnResponse.isError = true;
+                        return response.json();
+                    }
+                }
+            })
+            .then(data => {
+                returnResponse.isLoading = false;
+                returnResponse.data = data;
+            })
+            .catch(error => {
+                returnResponse.isLoading = false;
+                returnResponse.data = error;
+                returnResponse.isError = true;
+            })
+        return returnResponse;
+    }
+
+    const FetchPostFile = async (url, requestBody) => {
+
+        var returnResponse = { data: null, isLoading: true, isError: false };
+        var header = !user.isLoggedIn ? {} :
+            {
+                'Authorization': 'Bearer ' + user.token,
+            }
+
+        const requestOptions = {
+            method: 'POST',
+            headers: header,
+            body: requestBody
+        };
+
+        await fetch(url, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return new Promise((resolve) => {
+                        if (response) {
+                            response.json().then(json => {
+                                resolve(json)
+                            }
+                            ).catch(() => {
+                                resolve(null)
+                            })
                         } else {
                             resolve(null)
                         }
@@ -165,5 +216,5 @@ export const ApiHooks = () => {
         return returnResponse;
     }
 
-    return { FetchGet, FetchPost, FetchFile };
+    return { FetchGet, FetchPost, FetchFile, FetchPostFile };
 }
