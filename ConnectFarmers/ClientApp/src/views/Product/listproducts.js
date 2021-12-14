@@ -79,7 +79,7 @@ export const ListProductsView = () => {
             return;
         }
         else if (layout === 'grid') {
-            return <DataViewGridItem data={data} />
+            return <DataViewGridItem ShowbidDisplayDiv={(a) => ShowbidDisplayDiv(a)} data={data} />
         }
     };
 
@@ -94,7 +94,10 @@ export const ListProductsView = () => {
             setBidDisplayDiv(!bidDisplayDiv)
         })
     }
-
+    function ShowbidDisplayDiv(data){
+        setBidDisplayDiv(!bidDisplayDiv)
+        setSelectedProduct(data)
+    }
     return (
         <div className="p-grid list-demo">
             <div className="p-col-12">
@@ -103,7 +106,8 @@ export const ListProductsView = () => {
                         sortOrder={sortOrder} sortField={sortField}
                         itemTemplate={itemTemplate}>
                     </DataView>
-                    <Dialog header="Product Details" visible={bidDisplayDiv} style={{ width: '60%', height: 600 }} modal onHide={() => setBidDisplayDiv(false)}>
+                    <Dialog header="Product Details" visible={bidDisplayDiv} 
+                    style={{ width: '60%', height: 600 }} modal onHide={() => setBidDisplayDiv(false)}>
                         {
                             OpenDialog()
                         }

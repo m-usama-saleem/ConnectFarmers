@@ -28,14 +28,13 @@ const BidTimer = (props) => {
 export const DataViewGridItem = (props) => {
 
     const op2 = useRef(8);
-    const [bidDisplayDiv, setBidDisplayDiv] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
     const [data, setDate] = useState(props.data)
     const toggleDataTable = (event) => {
         op2.current.toggle(event);
     };
 
-debugger
+console.log("props")
+console.log(props)
     return (
         data != null ?
             <div className="p-col-12 p-md-4" style={{ minHeight: 520 }}>
@@ -59,7 +58,7 @@ debugger
                         {/*  */}
                         <Button type="button" label="Bid History" onClick={toggleDataTable} className="p-button-success" />
                         <Button className="btn" label="Bid" disabled={data.inventoryStatus === 'OUTOFSTOCK'}
-                            onClick={() => { setBidDisplayDiv(!bidDisplayDiv); setSelectedProduct(data) }}></Button>
+                            onClick={() => { props.ShowbidDisplayDiv(data); }}></Button>
 
                         <OverlayPanel ref={op2} appendTo={document.body} showCloseIcon id="overlay_panel" style={{ width: '450px' }}>
                             <div className="p-grid p-formgrid">
