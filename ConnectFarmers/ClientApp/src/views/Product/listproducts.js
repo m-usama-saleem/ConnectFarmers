@@ -44,7 +44,7 @@ export const ListProductsView = () => {
         const data = selectedProduct
         if (data) {
 
-            var images = data.images.split(",");
+            var images = data.images ? data.images.split(",") : "";
             var allImages = images.map(e => <div><img width='80%' height='400px' src={`${ImagePath}${e}`} /></div>)
             return (
                 <div>

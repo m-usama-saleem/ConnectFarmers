@@ -9,6 +9,7 @@ import { ProductService } from '../services/ProductService';
 import { ImagePath } from '../constants/Data';
 import { NotificationItems } from './NotificationItems';
 import { ACTIVE_BIDS_VIEW, BOUGHT_LIST_VIEW, CREATE_PRODUCTS_VIEW, EXPIRE_BIDS_VIEW, LIST_PRODUCTS_VIEW, POST_BIDS_VIEW, PROFILE_VIEW, SOLD_LIST_VIEW } from '../constants/routes';
+import { AuthenticationService } from '../services/AuthenticationService';
 
 const AppTopbar = (props) => {
 
@@ -18,6 +19,7 @@ const AppTopbar = (props) => {
         GetActiveBidsCount, GetExpireBidsCount,
         CheckSoldBids, CheckExpireBids
     } = ProductService();
+    const { Logout} = AuthenticationService();
 
     let navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -282,7 +284,7 @@ const AppTopbar = (props) => {
 
                     <li className={profileItemClassName}>
                         <button type="button" className="p-link" onClick={props.onTopbarUserMenu}>
-                            <img src={`${ImagePath}${userProfile ? userProfile.contact : ""}`} alt="diamond-layout" className="profile-image" />
+                            <img src={`${ImagePath}${userProfile ? userProfile.image : ""}`} alt="diamond-layout" className="profile-image" />
                             <span className="profile-name">Amelia Stone</span>
                         </button>
                         <ul className="profile-menu fade-in-up">
@@ -293,7 +295,7 @@ const AppTopbar = (props) => {
                                 </button>
                             </li>
                             <li>
-                                <button type="button" className="p-link">
+                                <button onClick={()=> Logout()} type="button" className="p-link">
                                     <i className="pi pi-power-off"></i>
                                     <span>Logout</span>
                                 </button>

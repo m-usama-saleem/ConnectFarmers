@@ -504,7 +504,6 @@ export const ProductsWithOrders = [
 ]
 
 export const CategoriesData = [
- { "name": "Crop", "code":"Crop"},
  { "name": "Vegetable", "code":"Vegetable"},
  { "name": "Fruit", "code":"Fruit"},
  { "name": "Seed", "code":"Seed"},

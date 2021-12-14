@@ -47,7 +47,7 @@ console.log(props)
                         <BidTimer data={data} />
                     </div>
                     <div className="product-grid-item-content">
-                        <img src={`${ImagePath}${data.images.split(',')[0]}`} height='250px' alt={data.name} />
+                        <img src={`${ImagePath}${data.images ? data.images.split(',')[0] : ""}`} height='250px' alt={data.name} />
                         <div className="product-name">{data.name}</div>
                         <div className="product-description">{data.area} | {data.district} | {data.city} </div>
                         <div className="product-description">Weight: {data.weight} KG</div>

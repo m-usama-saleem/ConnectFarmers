@@ -16,6 +16,7 @@ export const ProfileView = () => {
     const [userProfile, setUserProfile] = useState(null);
     const { UpdateUserProfile, UploadImage } = AuthenticationService();
     const [name, setName] = useState("");
+    const [lastname, setLastName] = useState("");
     const [files, setFiles] = useState("");
     const [contact, setContact] = useState("");
     const [nic, setNic] = useState("");
@@ -25,8 +26,11 @@ export const ProfileView = () => {
         var ls_up = JSON.parse(localStorage.getItem("LoggedInUserProfile"));
 
         setUser(ls.user)
-        setName(ls.user.name)
         setUserProfile(ls_up)
+        setName(ls_up.firstName)
+        setLastName(ls_up.lastName)
+        setContact(ls_up.contact)
+        setNic(ls_up.nic)
     }, []);
 
     function SaveProfile() {
@@ -37,19 +41,44 @@ export const ProfileView = () => {
                 f.append("file[]", e)
             })
         }
+        if(filesArray.length > 0){
 
-        UploadImage(f).then((fname) => {
-            userProfile.image = fname;
-            localStorage.setItem("LoggedInUserProfile", JSON.stringify(userProfile))
+            UploadImage(f).then((fname) => {
+                userProfile.image = fname;
+
+                userProfile.contact = contact;
+                userProfile.firstName = name;
+                userProfile.lastName = lastname;
+                userProfile.nic = nic;
+                localStorage.setItem("LoggedInUserProfile", JSON.stringify(userProfile))
+                var obj = {
+                    LoginId: user.loginId,
+                    FirstName: name,
+                    Image: fname,
+                    Contact: contact,
+                    NIC: nic,
+                    LastName: lastname
+                }
+                UpdateUserProfile(obj)
+            })
+        }
+        else{
             var obj = {
                 LoginId: user.loginId,
                 FirstName: name,
-                Image: fname,
                 Contact: contact,
-                NIC: nic
+                NIC: nic,
+                Image: userProfile.image,
+                LastName: lastname
             }
+            userProfile.contact = contact;
+            userProfile.firstName = name;
+            userProfile.lastName = lastname;
+            userProfile.nic = nic;
+
+            localStorage.setItem("LoggedInUserProfile", JSON.stringify(userProfile))
             UpdateUserProfile(obj)
-        })
+        }
     }
 
     const onFileSelected = (e) => {
@@ -69,9 +98,14 @@ export const ProfileView = () => {
                 <h5>Change Profile Data</h5>
                 <div className="p-formgrid p-grid">
                     <div className="p-field p-col-6">
-                        <label htmlFor="name2">Name</label>
+                        <label htmlFor="name2">First Name</label>
                         <InputText value={name}
                             onChange={(e) => setName(e.target.value)} id="name2" type="text" />
+                    </div>
+                    <div className="p-field p-col-6">
+                        <label htmlFor="name2">Last Name</label>
+                        <InputText value={lastname}
+                            onChange={(e) => setLastName(e.target.value)} id="name2" type="text" />
                     </div>
                     <div className="p-field p-col-6">
                         <label htmlFor="email2">Email</label>
